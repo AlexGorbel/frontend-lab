@@ -283,13 +283,13 @@ function loadingImagesAtTheSameTimeGeneratorOne(...urls){
         generator.next();
     }
 
-    const image = createImageElement();
-    console.log(arr[1]);
-    console.log(arr);
-    setTimeout(() => {
-        image.src = arr[0][0].url;
-    }, 500);
-}
+    arr[0].then((response) => {
+        const image = createImageElement();
 
+        setTimeout(() => {
+            image.src = response[0].url;
+        }, 500);
+    })
+}
 
 
