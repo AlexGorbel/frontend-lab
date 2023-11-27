@@ -1,4 +1,4 @@
-const url = 'https://api.thecatapi.com/v1/images/search';
+const URL = 'https://api.thecatapi.com/v1/images/search';
 const urlPreloader = './images/preloader.gif'
 const imagesContainer = document.querySelector('.images');
 let count = 0;
@@ -14,81 +14,99 @@ function createImageElement(){
     imageWrapper.append(image);
 
     imagesContainer.append(imageWrapper);
-
     return image;
 }
 
+async function newRenderImage(url) {
+    try {
+        const response = await fetch(url);
+        return await response.json();
+
+    } catch (err) {
+        const image = createImageElement();
+        image.src = '#';
+        image.alt = `${err.message}`;
+    }
+}
+
+async function getImageData(url) {
+    try {
+        const response = await fetch(url);
+        const responseData = await response.json()
+        const image = await createImageElement();
+
+        image.src = await responseData[0].url;
+    } catch (err) {
+        const image = createImageElement();
+        image.src = '#';
+        image.alt = `${err.message}`;
+    }
+}
+
+async function renderImage(url) {
+    try {
+        const response = await fetch(url);
+        const responseData = await response.json();
+        const image = createImageElement();
+
+        image.src = responseData[0].url;
+
+    } catch (err) {
+        const image = createImageElement();
+        image.src = '#';
+        image.alt = `${err.message}`;
+    }
+}
+
 function loadingImagesOneByOneCallback(...urls){
-    const arr = urls;
     function loadingImages(url) {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url);
         xhr.responseType = 'json';
         xhr.send();
+
+        const image = createImageElement();
+
         xhr.onload = () => {
             const response = xhr.response;
-            const image = createImageElement();
-            setTimeout(() => {
-                image.src = response[0].url;
-            }, 500)
+
+            image.src = response[0].url;
 
             if(count < 4) {
                 count++;
-                loadingImages(arr[count]);
+                loadingImages(urls[count]);
             }
         }
     }
 
-    return loadingImages(arr[count]);
+    return loadingImages(urls[count]);
 }
 
 function loadingImagesOneByOnePromise(){
-
     function loadUrlImage(url){
-        return fetch(url).then(
-            (response) => {
-                return response.json();
-            }
-        )
+        // debugger
+        return fetch(url)
+            .then((response) => response.json())
+            .then(renderImage)
     }
 
     function renderImage(data){
         let image = createImageElement();
-        setTimeout(() => {
-            image.src = data[0].url;
-        }, 500)
 
-        return loadUrlImage(url);
+        image.src = data[0].url;
     }
 
-    loadUrlImage(url)
-        .then(renderImage)
-        .then(renderImage)
-        .then(renderImage)
-        .then(renderImage)
-        .then(renderImage)
+    loadUrlImage(URL)
+        .then(() => loadUrlImage(URL))
+        .then(() => loadUrlImage(URL))
+        .then(() => loadUrlImage(URL))
+        .then(() => loadUrlImage(URL))
+
 }
 
 async function loadingImagesOneByOneAsync(...urls){
-    let arr = [];
-
     for(let url of urls){
-        arr.push(await getImageData(url));
-    }
-
-    arr.map(item => {
-        let image = createImageElement();
-        image.src = item[0].url;
-    })
-}
-async function getImageData(url){
-    try {
-        const response = await fetch(url);
-        return await response.json()
-    } catch (err) {
-        const image = createImageElement();
-        image.src = '#';
-        image.alt = `${err.message}`;
+        await getImageData(url);
     }
 }
 
@@ -101,12 +119,12 @@ function loadingImagesOneByOneFuncGeneratorMethod(...urls) {
 
     const generator = createGenerator(urls);
 
-    function ssss(generator){
+    function loadNextImage(generator){
         generator.next();
     }
 
     for(let i = 0; i < urls.length; i++){
-        ssss(generator);
+        loadNextImage(generator);
     }
 }
 
@@ -179,22 +197,6 @@ function loadingImagesAtTheSameTimeGenerator(...urls){
     }
 }
 
-async function renderImage(url) {
-    try {
-        const response = await fetch(url);
-        const responseData = await response.json();
-        const image = createImageElement();
-
-        setTimeout(() => {
-            image.src = responseData[0].url;
-        }, 500);
-    } catch (err) {
-        const image = createImageElement();
-        image.src = '#';
-        image.alt = `${err.message}`;
-    }
-}
-
 
 //////////////
 
@@ -242,17 +244,6 @@ function loadingImagesAtTheSameTimePromiseOne(...urls){
     })
 }
 
-async function newRenderImage(url) {
-    try {
-        const response = await fetch(url);
-        return await response.json();
-
-    } catch (err) {
-        const image = createImageElement();
-        image.src = '#';
-        image.alt = `${err.message}`;
-    }
-}
 function loadingImagesAtTheSameTimeAsyncOne(...urls){
     let arr = [];
     async function loadImages(url){
