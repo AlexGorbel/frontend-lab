@@ -1,5 +1,6 @@
 import './index.html';
 import './_style.scss';
+import {forEach} from "lodash";
 
 const objectMarking = '{}';
 const arrayMarking = '[]';
@@ -13,18 +14,18 @@ function createObjectComponent (json) {
     const elementBox = document.createElement('ul');
     elementBox.classList.add('json__content');
 
-    arraysObject.forEach(([key, value]) => {
-        const elementBoxItem = crateElementBoxItem (key);
-        elementBox.append(elementBoxItem);
+    forEach(arraysObject, ([key, value]) => {
+            const elementBoxItem = crateElementBoxItem (key);
+            elementBox.append(elementBoxItem);
 
-        if (value === null) {
-            value = 'null';
-        }
+            if (value === null) {
+                value = 'null';
+            }
 
-        const buttonTagWrapper = createButtonTag(value);
+            const buttonTagWrapper = createButtonTag(value);
 
-        addContentDependingOnType(value, elementBoxItem, buttonTagWrapper);
-    })
+            addContentDependingOnType(value, elementBoxItem, buttonTagWrapper);
+        })
 
     return elementBox;
 }
