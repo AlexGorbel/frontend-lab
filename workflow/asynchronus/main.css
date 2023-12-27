@@ -1,0 +1,27 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    padding: 50px;
+    background-color: #d0d0d0;
+}
+
+.images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+    height: 100%;
+}
+
+.images__item {
+    width: 200px;
+    height: 200px;
+}
+
+.img{
+    display: inline-block;
+    height: 100%;
+    object-fit: cover;
+}
