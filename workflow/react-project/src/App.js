@@ -1,9 +1,13 @@
-import CurrentTime from "./CurrentTime";
+import GlobalStyle from "./GlobalStyles";
+import Header from "./components/Header";
+import Main from "./components/Main";
 
 function App() {
   return (
     <div className="App">
-      <CurrentTime />
+        <GlobalStyle />
+        <Header />
+        <Main />
     </div>
   );
 }
